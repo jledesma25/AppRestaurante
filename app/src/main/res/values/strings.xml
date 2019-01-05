@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">AppRestaurante</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="control_activity_boton_mesa_uno">Piso 1</string>
+    <string name="control_activity_boton_mesa_dos">Piso 2</string>
+    <string name="loguin_activity_titulo">!Bienvenid@s</string>
 </resources>

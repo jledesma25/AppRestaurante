@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="espacio_bordes_general">16dp</dimen>
+    <dimen name="espacio_margen_superior_control_mesa">40dp</dimen>
+</resources>
