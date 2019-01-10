@@ -5,4 +5,10 @@ package com.prestaurante.apprestaurante.util;
  */
 
 public class Constantes {
+
+    public static final String URL_BASE = "http://testing.bjm-consulting.com/BismarckWCF.svc/";
+
+    public static final int EXITO = 0;
+    public static final int VALIDACION = 1;
+    public static final int ERROR = 2;
 }

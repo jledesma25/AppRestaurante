@@ -11,11 +11,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.prestaurante.apprestaurante.R;
+import com.prestaurante.apprestaurante.entities.DatosPersonaUsuario;
+import com.prestaurante.apprestaurante.entities.request.LoguinRequest;
+import com.prestaurante.apprestaurante.rest.HelperWs;
+import com.prestaurante.apprestaurante.rest.MethodWs;
+import com.prestaurante.apprestaurante.util.Constantes;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoguinActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -638,20 +646,59 @@ public class LoguinActivity extends AppCompatActivity implements View.OnClickLis
         pd.setCancelable(false);
         pd.show();
 
-        TimerTask task = new TimerTask() {
+        LoguinRequest loguinRequest = new LoguinRequest();
+        loguinRequest.setPassword(clave);
+
+        MethodWs methodWS = HelperWs.getConfiguration().create(MethodWs.class);
+        Call<DatosPersonaUsuario> responseCall = methodWS.autenticarCredenciales(loguinRequest);
+        responseCall.enqueue(new Callback<DatosPersonaUsuario>() {
             @Override
-            public void run() {
+            public void onResponse(Call<DatosPersonaUsuario> call, Response<DatosPersonaUsuario> response) {
+
+                if(response.isSuccessful()){
+
+                    DatosPersonaUsuario usuario = response.body();
+
+                    if(usuario.getMensajecodigo() == Constantes.VALIDACION){
+
+                        pd.dismiss();
+
+                        pd = new SweetAlertDialog(LoguinActivity.this,SweetAlertDialog.WARNING_TYPE);
+                        pd.getProgressHelper().setBarColor(Color.parseColor("#102670"));
+                        pd.setTitle("Informativo");
+                        pd.setContentText(usuario.getMensajeresultado());
+                        pd.setCancelable(false);
+                        pd.show();
+
+                    }else if(usuario.getMensajecodigo() == Constantes.ERROR){
+
+                        pd.dismiss();
+
+                        pd = new SweetAlertDialog(LoguinActivity.this,SweetAlertDialog.ERROR_TYPE);
+                        pd.getProgressHelper().setBarColor(Color.parseColor("#102670"));
+                        pd.setTitle("Informativo");
+                        pd.setContentText(usuario.getMensajeresultado());
+                        pd.setCancelable(false);
+                        pd.show();
+
+                    }else if(usuario.getMensajecodigo() == Constantes.EXITO){
 
 
-                Intent i = new Intent(LoguinActivity.this,ControlMesasActivity.class);
-                startActivity(i);
-                finish();
+                        Intent i = new Intent(LoguinActivity.this,ControlMesasActivity.class);
+                        startActivity(i);
+                        finish();
 
+                    }
+                }
             }
-        };
 
-        Timer timer = new Timer();
-        timer.schedule(task,3000);
+            @Override
+            public void onFailure(Call<DatosPersonaUsuario> call, Throwable t) {
+
+                Log.d("jledesma",t.getStackTrace().toString());
+                Log.d("jledesma",t.getMessage().toString());
+            }
+        });
 
 
     }
